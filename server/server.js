@@ -16,11 +16,73 @@ app.use(cookieParser());
 
 // model
 const { User } = require('./models/User')
-
+const { Brand } = require('./models/Brand')
+const { Wood } = require('./models/Wood')
+const { Product } = require('./models/Product')
 // middleware
-const { auth } =require('./middleware/auth')
+const { auth } = require('./middlewares/auth')
+const { admin } = require('./middlewares/admin')
 
-// user
+// =======================
+//      PRODUCT
+// =======================
+
+app.post('/api/product/article', auth, admin, (req, res) => {
+    const product = new Product(req.body);
+
+    product.save((err, doc) => {
+        if (err) return res.json({success: false, err})
+
+        res.status(200).json({ success: true, article: doc })
+    })
+})
+// =======================
+//      WOOD
+// =======================
+app.post('/api/product/wood', auth, admin, (req, res) => {
+    const wood = new Wood(req.body);
+
+    wood.save((err, doc) => {
+        if (err) return res.json({success: false, err})
+
+        res.status(200).json({ success: true, wood: doc })
+    })
+})
+
+app.get('/api/product/woods', (req, res) => {
+    Wood.find({}, (err, woods) => {
+        if (err) res.status(400).send(err);
+
+        res.status(200).send(woods);
+    })
+})
+// =======================
+//      BRAND
+// =======================
+app.post('/api/product/brand', auth, (req, res) => {
+    const brand = new Brand(req.body);
+
+    brand.save((err, doc) => {
+        if (err) return res.json({success: false, err});
+
+        res.status(200).json({
+            success: true,
+            brand: doc
+        })
+    })
+})
+
+app.get('/api/product/brands', (req, res) => {
+    Brand.find({}, (err, brands) => {
+        if (err) res.status(400).send(err);
+
+        res.status(200).send(brands);
+    })
+})
+
+// =======================
+//      USER
+// =======================
 app.get('/api/users/auth', auth, (req, res) => {
     res.status(200).json({
         isAdmin: req.user.role === 0 ? false : true,
