@@ -27,6 +27,30 @@ const { admin } = require('./middlewares/admin')
 //      PRODUCT
 // =======================
 
+// by arrival
+// articles?sortBy=createdAt&order=desc&limit=4
+
+// by sold
+// articles?sortBy=&order=solddesc&limit=100&skip=5
+app.get('/api/product/articles', (req, res) => {
+    let order = req.query.order ? req.query.order : 'asc'
+    let sortBy = req.query.sortBy ? req.query.sortBy : '_id'
+    let limit = req.query.limit ? parseInt(req.query.limit) : 100
+
+    Product
+        .find()
+        .populate('brand')
+        .populate('wood')
+        .sort([[sortBy, order]])
+        .limit(limit)
+        .exec((err, articles) => {
+            if (err) return res.status(400).send(err)
+
+            res.send(articles)
+        })
+})
+
+// {{url}}/api/product/articles_by_id?id=5b96bc1ce1f43113cca3c7f2,5b96bc01e1f43113cca3c7f1&type=array
 // get one/many product by Id on query string
 app.get('/api/product/articles_by_id', (req, res) => {
     let type = req.query.type;
