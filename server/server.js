@@ -31,7 +31,7 @@ const { admin } = require('./middlewares/admin')
 // articles?sortBy=createdAt&order=desc&limit=4
 
 // by sold
-// articles?sortBy=&order=solddesc&limit=100&skip=5
+// articles?sortBy=sold&order=desc&limit=100&skip=5
 app.get('/api/product/articles', (req, res) => {
     let order = req.query.order ? req.query.order : 'asc'
     let sortBy = req.query.sortBy ? req.query.sortBy : '_id'
